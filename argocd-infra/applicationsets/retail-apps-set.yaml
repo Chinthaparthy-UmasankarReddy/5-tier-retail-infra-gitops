@@ -13,9 +13,6 @@ spec:
   template:
     metadata:
       name: '{{path.basename}}-app'
-      annotations:
-        # LOWER PRIORITY WAVE: Waits until Wave -1 (Prometheus Stack) is healthy
-        argocd.argoproj.io/sync-wave: "0"
     spec:
       project: default
       sources:
@@ -35,3 +32,6 @@ spec:
         automated:
           prune: true
           selfHeal: true
+        syncOptions:
+          # FIX: Forces ArgoCD to successfully establish the namespace BEFORE creating manifests
+          - CreateNamespace=true
