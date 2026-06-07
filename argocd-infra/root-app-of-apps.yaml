@@ -3,14 +3,12 @@ kind: Application
 metadata:
   name: root-app-of-apps
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git' # Your actual Repo-3 URL
-    targetRevision: HEAD
-    path: argocd-infra  # This instructs ArgoCD to read your infrastructure directory
+    repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
+    targetRevision: dev  # FIXED: Tracks your infrastructure configurations on the dev branch
+    path: argocd-infra  
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd
@@ -18,5 +16,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
