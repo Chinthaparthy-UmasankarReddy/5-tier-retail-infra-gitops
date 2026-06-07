@@ -18,10 +18,11 @@ spec:
       source:
         repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
         targetRevision: dev
-        path: apps/central-shared-chart # Points directly to the shared layout core
+        path: apps/central-shared-chart
         helm:
+          # FIX: Step out of central-shared-chart (2 levels up) to hit repo root, then path down
           valueFiles:
-            - '{{path}}/values.yaml' # Resolves dynamically to individual microservices properties
+            - '../../apps/microservices/{{path.basename}}/values.yaml'
       destination:
         server: 'https://kubernetes.default.svc'
         namespace: production
