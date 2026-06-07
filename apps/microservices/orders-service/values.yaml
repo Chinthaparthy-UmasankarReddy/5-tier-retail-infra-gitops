@@ -1,0 +1,29 @@
+replicaCount: 2
+
+image: 5-retail-app-source-orders-service:latest
+  #repository: 111122223333.dkr.ecr.ap-south-1.amazonaws.com/orders-service
+  #tag: "v1.0.0-baseline"
+  #pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+# Java/JVM runtimes require more memory overhead compared to Go/Node
+resources:
+  limits:
+    cpu: 500m
+    memory: 1024Mi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+podAntiAffinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - orders-service
+      topologyKey: "kubernetes.io/hostname" # Ensures pods land on completely different EC2 nodes for High Availability

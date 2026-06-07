@@ -1,0 +1,46 @@
+replicaCount: 3 # Scaled to 3 replicas to support flash-sale traffic spikes
+
+image: 5-retail-app-source-cards-service:latest
+  #repository: 111122223333.dkr.ecr.ap-south-1.amazonaws.com/orders-service
+  #tag: "v1.0.0-baseline"
+  #pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources:
+  limits:
+    cpu: 400m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+podLabels:
+  monitoring-target: retail-microservice
+
+# High-Availability Strategy: Spreads pods across separate underlying EC2 worker nodes
+podAntiAffinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - cards-service
+      topologyKey: "kubernetes.io/hostname"
+
+livenessProbe:
+  httpGet:
+    path: /metrics
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 20
+
+readinessProbe:
+  httpGet:
+    path: /metrics
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10

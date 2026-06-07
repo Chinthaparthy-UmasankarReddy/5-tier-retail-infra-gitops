@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: retail-microservices
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/retail-app-gitops.git'
+        revision: HEAD
+        directories:
+          - path: apps/microservices/* # Dynamically matches cards, catalog, login, orders, payment
+  template:
+    metadata:
+      name: '{{path.basename}}-app'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/retail-app-gitops.git'
+        targetRevision: HEAD
+        path: '{{path}}' # Resolves to the specific directory (e.g., apps/microservices/catalog-service)
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: production # Deploys your retail ecosystem apps here
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

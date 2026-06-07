@@ -1,0 +1,45 @@
+replicaCount: 2
+
+image: 5-retail-app-source-login-service:latest
+  #repository: 111122223333.dkr.ecr.ap-south-1.amazonaws.com/orders-service
+  #tag: "v1.0.0-baseline"
+  #pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+# Node.js processes run on a single thread; these boundaries optimize scaling
+resources:
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  requests:
+    cpu: 150m
+    memory: 256Mi
+
+# Configures the application to use your environment settings
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: JWT_SECRET
+    value: "prod-session-secure-key-vault" # Note: Production keys should be injected using External Secrets Operator (ESO)
+
+# Prometheus Scraping Configuration
+podLabels:
+  monitoring-target: retail-microservice
+
+# Health Checks
+livenessProbe:
+  httpGet:
+    path: /metrics
+    port: 8080
+  initialDelaySeconds: 10
+  periodSeconds: 15
+
+readinessProbe:
+  httpGet:
+    path: /metrics
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10

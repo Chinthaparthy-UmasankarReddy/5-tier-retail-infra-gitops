@@ -1,0 +1,40 @@
+replicaCount: 2
+
+image: 5-retail-app-source-payment-service:latest
+  #repository: 111122223333.dkr.ecr.ap-south-1.amazonaws.com/orders-service
+  #tag: "v1.0.0-baseline"
+  #pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+# Go requires significantly lower resource thresholds than Java or Node.js
+resources:
+  limits:
+    cpu: 150m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+env:
+  - name: GIN_MODE
+    value: "release" # Disables internal Gin debug logging to maximize raw IO throughput
+
+podLabels:
+  monitoring-target: retail-microservice
+
+livenessProbe:
+  httpGet:
+    path: /metrics
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /metrics
+    port: 8080
+  initialDelaySeconds: 3
+  periodSeconds: 5

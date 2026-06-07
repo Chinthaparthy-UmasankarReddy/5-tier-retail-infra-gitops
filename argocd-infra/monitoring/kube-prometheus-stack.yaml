@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://prometheus-community.github.io/helm-charts'
+    chart: kube-prometheus-stack
+    targetRevision: 56.6.2
+    helm:
+      values: |
+        prometheus:
+          prometheusSpec:
+            scrapeInterval: "15s"
+            evaluationInterval: "15s"
+            retention: "15d"
+            serviceMonitorSelectorNilUsesHelixValues: false # Forces discovery across namespaces
+        grafana:
+          adminPassword: "admin-monitoring-vault-pass"
+          persistence:
+            enabled: true
+            storageClassName: "gp3" # EKS dynamic block backing storage class
+            size: 10Gi
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
