@@ -4,7 +4,7 @@ global:
 replicaCount: 1
 
 image:
-  repository: 5-retail-app-source-login-service # Matches your local Docker image string
+  repository: umasankar33/5-retail-app-source-login-service
   tag: latest
 
 service:

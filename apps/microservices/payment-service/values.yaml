@@ -4,7 +4,7 @@ global:
 replicaCount: 1
 
 image:
-  repository: 5-retail-app-source-payment-service
+  repository: umasankar33/5-retail-app-source-payment-service
   tag: latest
 
 service:

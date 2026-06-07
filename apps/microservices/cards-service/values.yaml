@@ -4,7 +4,7 @@ global:
 replicaCount: 1
 
 image:
-  repository: 5-retail-app-source-cards-service
+  repository: umasankar33/5-retail-app-source-cards-service
   tag: latest
 
 service:

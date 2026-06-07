@@ -4,7 +4,7 @@ global:
 replicaCount: 1
 
 image:
-  repository: 5-retail-app-source-orders-service
+  repository: umasankar33/5-retail-app-source-orders-service
   tag: latest
 
 service:
