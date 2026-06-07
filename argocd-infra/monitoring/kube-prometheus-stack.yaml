@@ -4,8 +4,7 @@ metadata:
   name: kube-prometheus-stack
   namespace: argocd
   annotations:
-    # HIGHEST PRIORITY WAVE: Installs monitoring stack and CRDs first
-    argocd.argoproj.io/sync-wave: "-1" 
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   project: default
   source:
@@ -14,15 +13,33 @@ spec:
     targetRevision: 48.x.x
     helm:
       values: |
+        # 1. DISABLE ALL KUBERNETES CONTROL PLANE ARCHITECTURE SCRAPERS
+        kubeApiServer: { enabled: false }
+        kubelet: { enabled: false }
+        kubeControllerManager: { enabled: false }
+        kubeScheduler: { enabled: false }
+        kubeProxy: { enabled: false }
+        kubeEtcd: { enabled: false }
+        coreDns: { enabled: false }
+        nodeExporter: { enabled: false }
+        kubeStateMetrics: { enabled: false }
+
+        # 2. STRIP OUT DEFAULT ALERTS & PRE-BAKED SYSTEM RULES
+        defaultRules:
+          create: false # Turns off the massive list of 'PR' rules cluttering your logs
+
+        # 3. KEEP ONLY CORE TELEMETRY ENGINES
         prometheus:
+          enabled: true
           prometheusSpec:
+            # Tells Prometheus to discover custom ServiceMonitors in the production namespace
             serviceMonitorSelectorNilUsesHelixLimits: false
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: monitoring
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+            serviceMonitorSelector:
+              matchLabels:
+                release: kube-prometheus-stack
+
+        grafana:
+          enabled: true # Keeps your visual dashboard tier active
+          
+        alertmanager:
+          enabled: false # Disables default notification alertmanager structures
