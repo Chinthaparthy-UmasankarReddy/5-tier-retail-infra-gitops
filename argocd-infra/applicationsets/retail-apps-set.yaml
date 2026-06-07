@@ -7,9 +7,9 @@ spec:
   generators:
     - git:
         repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
-        revision: dev  # FIXED: Tells the generator to scan the file tree on the dev branch
+        revision: dev
         directories:
-          - path: apps/microservices/* 
+          - path: apps/microservices/*
   template:
     metadata:
       name: '{{path.basename}}-app'
@@ -17,11 +17,14 @@ spec:
       project: default
       source:
         repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
-        targetRevision: dev  # FIXED: Tells ArgoCD to pull the Helm configs from the dev branch
-        path: '{{path}}' 
+        targetRevision: dev
+        path: apps/central-shared-chart # Points directly to the shared layout core
+        helm:
+          valueFiles:
+            - '{{path}}/values.yaml' # Resolves dynamically to individual microservices properties
       destination:
         server: 'https://kubernetes.default.svc'
-        namespace: production 
+        namespace: production
       syncPolicy:
         automated:
           prune: true

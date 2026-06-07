@@ -1,33 +1,20 @@
+global:
+  appName: catalog-service
+
 replicaCount: 3
 
-image: 5-retail-app-source-catalog-service:latest
-  #repository: 111122223333.dkr.ecr.ap-south-1.amazonaws.com/orders-service
-  #tag: "v1.0.0-baseline"
-  #pullPolicy: IfNotPresent
+image:
+  repository: 5-retail-app-source-catalog-service
+  tag: latest
 
 service:
-  type: ClusterIP
-  port: 8080
+  port: 8082
+
+env:
+  GIN_MODE: "release"
+  PORT: "8082"
+  DB_HOST: "prod-retail-db.ap-south-1.rds.amazonaws.com"
 
 resources:
-  limits:
-    cpu: 200m
-    memory: 256Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
-
-# DevOps Practice: Liveness and Readiness probes verify the health of the internal Gin server
-livenessProbe:
-  httpGet:
-    path: /api/v1/products
-    port: 8080
-  initialDelaySeconds: 5
-  periodSeconds: 10
-
-readinessProbe:
-  httpGet:
-    path: /api/v1/products
-    port: 8080
-  initialDelaySeconds: 5
-  periodSeconds: 5
+  limits: { cpu: "200m", memory: "128Mi" }
+  requests: { cpu: "50m", memory: "64Mi" }
