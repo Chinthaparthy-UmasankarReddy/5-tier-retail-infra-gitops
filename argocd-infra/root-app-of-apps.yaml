@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/retail-app-gitops.git' # Your actual Repo-3 URL
+    repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git' # Your actual Repo-3 URL
     targetRevision: HEAD
     path: argocd-infra  # This instructs ArgoCD to read your infrastructure directory
   destination:

@@ -6,7 +6,7 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/retail-app-gitops.git'
+        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
         revision: HEAD
         directories:
           - path: apps/microservices/* # Dynamically matches cards, catalog, login, orders, payment
@@ -16,7 +16,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/retail-app-gitops.git'
+        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
         targetRevision: HEAD
         path: '{{path}}' # Resolves to the specific directory (e.g., apps/microservices/catalog-service)
       destination:
