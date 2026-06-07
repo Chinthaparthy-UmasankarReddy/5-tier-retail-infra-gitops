@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-prometheus-stack
+  name: standalone-prometheus
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
@@ -9,41 +9,20 @@ spec:
   project: default
   source:
     repoURL: 'https://prometheus-community.github.io/helm-charts'
-    chart: kube-prometheus-stack
-    targetRevision: 48.x.x
+    chart: prometheus # Standard standalone prometheus (NOT the stack)
+    targetRevision: 25.x.x
     helm:
       values: |
-        kubeApiServer: { enabled: false }
-        kubelet: { enabled: false }
-        kubeControllerManager: { enabled: false }
-        kubeScheduler: { enabled: false }
-        kubeProxy: { enabled: false }
-        kubeEtcd: { enabled: false }
-        coreDns: { enabled: false }
-        nodeExporter: { enabled: false }
-        kubeStateMetrics: { enabled: false }
-        defaultRules:
-          create: false
-        prometheus:
-          enabled: true
-          prometheusSpec:
-            serviceMonitorSelectorNilUsesHelixLimits: false
-            serviceMonitorSelector:
-              matchLabels:
-                release: kube-prometheus-stack
-        grafana:
-          enabled: true
-        alertmanager:
-          enabled: false
-          
-  # CRITICAL FIX: Ensure 'destination' is exactly aligned with 'source' above (2 spaces)
+        # Turn off everything except the server
+        alertmanager: { enabled: false }
+        prometheus-node-exporter: { enabled: false }
+        kube-state-metrics: { enabled: false }
+        prometheus-pushgateway: { enabled: false }
+        server:
+          persistentVolume: { enabled: false } # Keeps it fast and memory-only
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
-    
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [CreateNamespace=true]
