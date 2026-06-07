@@ -7,8 +7,10 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
-    targetRevision: dev  # FIXED: Tracks your infrastructure configurations on the dev branch
-    path: argocd-infra  
+    targetRevision: dev
+    path: argocd-infra
+    directory:
+      recurse: true # FIX: Tells ArgoCD to look into applicationsets/ and monitoring/ folders!
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd
