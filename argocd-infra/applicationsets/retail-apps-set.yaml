@@ -16,23 +16,21 @@ spec:
     spec:
       project: default
       sources:
-        # Source 1: The Central Shared Skeleton Helm Chart
+        # Source 1: The Core Helm Chart Template Engine
         - repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
           targetRevision: dev
           path: apps/central-shared-chart
           helm:
-            # Point to the reference defined below in Source 2
             valueFiles:
               - '$git-repo/apps/microservices/{{path.basename}}/values.yaml'
-              
-        # Source 2: Define your Git root alias to load the values profiles
+        # Source 2: The Environmental Configurations Pointer
         - repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
           targetRevision: dev
           ref: git-repo
-          
       destination:
         server: 'https://kubernetes.default.svc'
         namespace: production
+      # Note: syncPolicy is explicitly aligned for multi-source array blocks here
       syncPolicy:
         automated:
           prune: true
