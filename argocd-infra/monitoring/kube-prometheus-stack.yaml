@@ -13,7 +13,6 @@ spec:
     targetRevision: 48.x.x
     helm:
       values: |
-        # 1. DISABLE ALL KUBERNETES CONTROL PLANE ARCHITECTURE SCRAPERS
         kubeApiServer: { enabled: false }
         kubelet: { enabled: false }
         kubeControllerManager: { enabled: false }
@@ -23,23 +22,28 @@ spec:
         coreDns: { enabled: false }
         nodeExporter: { enabled: false }
         kubeStateMetrics: { enabled: false }
-
-        # 2. STRIP OUT DEFAULT ALERTS & PRE-BAKED SYSTEM RULES
         defaultRules:
-          create: false # Turns off the massive list of 'PR' rules cluttering your logs
-
-        # 3. KEEP ONLY CORE TELEMETRY ENGINES
+          create: false
         prometheus:
           enabled: true
           prometheusSpec:
-            # Tells Prometheus to discover custom ServiceMonitors in the production namespace
             serviceMonitorSelectorNilUsesHelixLimits: false
             serviceMonitorSelector:
               matchLabels:
                 release: kube-prometheus-stack
-
         grafana:
-          enabled: true # Keeps your visual dashboard tier active
-          
+          enabled: true
         alertmanager:
-          enabled: false # Disables default notification alertmanager structures
+          enabled: false
+          
+  # CRITICAL FIX: Ensure 'destination' is exactly aligned with 'source' above (2 spaces)
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+    
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
