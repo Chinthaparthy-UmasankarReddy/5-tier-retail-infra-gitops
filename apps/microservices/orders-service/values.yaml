@@ -1,7 +1,7 @@
 global:
   appName: orders-service
 
-replicaCount: 2
+replicaCount: 1
 
 image:
   repository: 5-retail-app-source-orders-service

@@ -1,7 +1,7 @@
 global:
   appName: login-service
 
-replicaCount: 2
+replicaCount: 1
 
 image:
   repository: 5-retail-app-source-login-service # Matches your local Docker image string

@@ -1,7 +1,7 @@
 global:
   appName: catalog-service
 
-replicaCount: 3
+replicaCount: 1
 
 image:
   repository: 5-retail-app-source-catalog-service
