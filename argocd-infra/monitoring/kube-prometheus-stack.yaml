@@ -3,23 +3,23 @@ kind: Application
 metadata:
   name: kube-prometheus-stack
   namespace: argocd
+  annotations:
+    # HIGHEST PRIORITY WAVE: Installs monitoring stack and CRDs first
+    argocd.argoproj.io/sync-wave: "-1" 
 spec:
   project: default
   source:
     repoURL: 'https://prometheus-community.github.io/helm-charts'
     chart: kube-prometheus-stack
-    targetRevision: 48.x.x # Stable production release tracker
+    targetRevision: 48.x.x
     helm:
       values: |
         prometheus:
           prometheusSpec:
             serviceMonitorSelectorNilUsesHelixLimits: false
-            serviceMonitorSelector:
-              matchLabels:
-                release: kube-prometheus-stack
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: monitoring # Deploys the telemetry suite here
+    namespace: monitoring
   syncPolicy:
     automated:
       prune: true
