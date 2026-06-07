@@ -7,9 +7,9 @@ spec:
   generators:
     - git:
         repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
-        revision: HEAD
+        revision: dev  # FIXED: Tells the generator to scan the file tree on the dev branch
         directories:
-          - path: apps/microservices/* # Dynamically matches cards, catalog, login, orders, payment
+          - path: apps/microservices/* 
   template:
     metadata:
       name: '{{path.basename}}-app'
@@ -17,11 +17,11 @@ spec:
       project: default
       source:
         repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
-        targetRevision: HEAD
-        path: '{{path}}' # Resolves to the specific directory (e.g., apps/microservices/catalog-service)
+        targetRevision: dev  # FIXED: Tells ArgoCD to pull the Helm configs from the dev branch
+        path: '{{path}}' 
       destination:
         server: 'https://kubernetes.default.svc'
-        namespace: production # Deploys your retail ecosystem apps here
+        namespace: production 
       syncPolicy:
         automated:
           prune: true
