@@ -3,14 +3,16 @@ kind: Application
 metadata:
   name: root-app-of-apps
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
     repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
-    targetRevision: dev
-    path: argocd-infra
+    targetRevision: dev  # Tracking your active dev branch
+    path: argocd-infra   # Points to the folder containing your application sets
     directory:
-      recurse: true # FIX: Tells ArgoCD to look into applicationsets/ and monitoring/ folders!
+      recurse: true      # Forces ArgoCD to look inside the applicationsets/ folder
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd
@@ -18,3 +20,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
