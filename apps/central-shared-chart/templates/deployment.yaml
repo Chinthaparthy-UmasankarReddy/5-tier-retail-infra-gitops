@@ -2,10 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.global.appName }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace | quote }} # FIX HERE
   labels:
     app: {{ .Values.global.appName }}
     tier: microservice
+# ... rest of your deployment follows unchanged
 spec:
   replicas: {{ .Values.replicaCount | default 2 }}
   selector:

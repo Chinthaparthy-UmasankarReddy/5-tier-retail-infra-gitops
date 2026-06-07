@@ -2,7 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.global.appName }}
-  namespace: {{ .Release.Namespace }}
+  # FIX: Allow ArgoCD to override or explicitly pass the release fallback
+  namespace: {{ .Release.Namespace | quote }} 
   labels:
     app: {{ .Values.global.appName }}
 spec:
