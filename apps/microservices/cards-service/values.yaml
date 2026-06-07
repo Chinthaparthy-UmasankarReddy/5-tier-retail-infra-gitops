@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   repository: umasankar33/5-retail-app-source-cards-service
-  tag: 3
+  tag: 4
 
 service:
   port: 8083
