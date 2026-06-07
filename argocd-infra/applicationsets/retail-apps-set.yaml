@@ -15,14 +15,21 @@ spec:
       name: '{{path.basename}}-app'
     spec:
       project: default
-      source:
-        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
-        targetRevision: dev
-        path: apps/central-shared-chart
-        helm:
-          # FIX: Step out of central-shared-chart (2 levels up) to hit repo root, then path down
-          valueFiles:
-            - '../../apps/microservices/{{path.basename}}/values.yaml'
+      sources:
+        # Source 1: The Central Shared Skeleton Helm Chart
+        - repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
+          targetRevision: dev
+          path: apps/central-shared-chart
+          helm:
+            # Point to the reference defined below in Source 2
+            valueFiles:
+              - '$git-repo/apps/microservices/{{path.basename}}/values.yaml'
+              
+        # Source 2: Define your Git root alias to load the values profiles
+        - repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
+          targetRevision: dev
+          ref: git-repo
+          
       destination:
         server: 'https://kubernetes.default.svc'
         namespace: production
