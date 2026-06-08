@@ -8,14 +8,14 @@ metadata:
     tier: microservice
 # ... rest of your deployment follows unchanged
 spec:
-  replicas: {{ .Values.replicaCount | default 2 }}
+  replicas: {{ .Values.replicaCount | default 1 }}
   selector:
     matchLabels:
-      app: {{ .Values.global.appName }}
+      app: {{ .Values.serviceName }}
   template:
     metadata:
       labels:
-        app: {{ .Values.global.appName }}
+        app: {{ .Values.serviceName }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.service.port }}"

@@ -14,4 +14,4 @@ spec:
       targetPort: {{ .Values.containerPort | default 8080 }}
       protocol: TCP
   selector:
-    app: {{ .Values.global.appName | default .Values.serviceName }}
+    app: {{ .Values.serviceName }}
