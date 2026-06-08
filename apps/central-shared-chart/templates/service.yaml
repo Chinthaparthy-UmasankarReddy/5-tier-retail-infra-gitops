@@ -6,11 +6,10 @@ metadata:
   labels:
     app: {{ .Values.serviceName }}
 spec:
-  type: {{ .Values.serviceType | default .Values.service.type | default "ClusterIP" }}
+  type: {{ .Values.serviceType | default "ClusterIP" }}
   ports:
     - port: {{ .Values.service.port | default 8080 }}
       targetPort: {{ .Values.containerPort | default 8080 }}
       protocol: TCP
   selector:
-    # FIX: Every backend service MUST select its own unique name
     app: {{ .Values.serviceName }}
