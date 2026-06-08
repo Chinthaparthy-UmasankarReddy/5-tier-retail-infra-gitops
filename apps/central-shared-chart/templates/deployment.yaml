@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.global.appName }}
+  name: {{ .Values.serviceName | default .Release.Name }}
   namespace: {{ .Release.Namespace | quote }} # FIX HERE
   labels:
-    app: {{ .Values.global.appName }}
+    app: {{ .Values.serviceName | default .Release.Name }}
     tier: microservice
 # ... rest of your deployment follows unchanged
 spec:
   replicas: {{ .Values.replicaCount | default 2 }}
   selector:
     matchLabels:
-      app: {{ .Values.serviceName }}
+      app: {{ .Values.serviceName | default .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.serviceName }}
+        app: {{ .Values.serviceName | default .Release.Name }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.service.port }}"

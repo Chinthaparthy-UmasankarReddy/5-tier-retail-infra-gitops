@@ -7,8 +7,6 @@ image:
   repository: umasankar33/5-retail-app-source-login-service
   tag: latest
 
-serviceName: login-service
-
 service:
   port: 8081
 

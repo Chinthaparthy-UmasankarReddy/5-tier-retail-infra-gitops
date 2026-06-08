@@ -1,15 +1,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.serviceName }}
+  # FIX: If serviceName is missing or null, automatically use the ArgoCD Application Release Name
+  name: {{ .Values.serviceName | default .Release.Name }}
   namespace: production
   labels:
-    app: {{ .Values.serviceName }}
+    app: {{ .Values.serviceName | default .Release.Name }}
 spec:
   type: {{ .Values.serviceType | default "ClusterIP" }}
   ports:
     - port: {{ .Values.service.port | default 8080 }}
+      # This matches the incoming port mapping rule dynamically
       targetPort: {{ .Values.containerPort | default 8080 }}
       protocol: TCP
   selector:
-    app: {{ .Values.serviceName }}
+    # FIX: Ensures the service points cleanly to its specific backend pod matching its release name
+    app: {{ .Values.serviceName | default .Release.Name }}
