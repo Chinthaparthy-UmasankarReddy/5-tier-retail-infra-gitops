@@ -1,0 +1,9 @@
+serviceName: frontend-service
+replicaCount: 2
+image:
+  repository: umasankar33/5-retail-app-frontend
+  tag: latest
+service:
+  port: 80
+  # CRITICAL: Exposes the app to the internet via an AWS Load Balancer
+  type: LoadBalancer
