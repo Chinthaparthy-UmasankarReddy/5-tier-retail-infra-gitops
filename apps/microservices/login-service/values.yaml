@@ -8,7 +8,7 @@ service:
   targetPort: 8080
 
 image:
-  repository: umasankar33/5-retail-app-login
+  repository: umasankar33/5-retail-app-source-login-service
   tag: latest
   pullPolicy: Always
 
