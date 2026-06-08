@@ -8,10 +8,10 @@ image:
   repository: umasankar33/5-retail-app-frontend
   tag: latest
 
-# 1. Flat override to bypass nesting quirks
+# Match our dynamic template fix
+containerPort: 80
 serviceType: LoadBalancer
 
-# 2. Standard nested block
 service:
   port: 80
   type: LoadBalancer
