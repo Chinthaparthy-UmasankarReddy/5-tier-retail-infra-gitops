@@ -1,17 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.global.appName }}
-  # FIX: Allow ArgoCD to override or explicitly pass the release fallback
-  namespace: {{ .Release.Namespace | quote }} 
+  name: {{ .Values.serviceName }}
+  namespace: production
   labels:
-    app: {{ .Values.global.appName }}
+    app: {{ .Values.serviceName }}
 spec:
-  # This pattern forces Helm to check both flat and nested definitions cleanly
   type: {{ .Values.serviceType | default .Values.service.type | default "ClusterIP" }}
   ports:
-    - port: {{ .Values.service.port | default 80 }}
+    - port: {{ .Values.service.port | default 8080 }}
       targetPort: {{ .Values.containerPort | default 8080 }}
       protocol: TCP
   selector:
+    # FIX: Every backend service MUST select its own unique name
     app: {{ .Values.serviceName }}
