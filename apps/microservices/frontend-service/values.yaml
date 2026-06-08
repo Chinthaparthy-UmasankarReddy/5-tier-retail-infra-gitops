@@ -1,12 +1,23 @@
-# Global tracking variables required by the shared template architecture
+# 1. Global section (Fixed from the last step)
 global:
   appName: retail-app
 
 serviceName: frontend-service
 replicaCount: 2
+
 image:
   repository: umasankar33/5-retail-app-frontend
   tag: latest
+
 service:
   port: 80
-  type: LoadBalancer
+  type: LoadBalancer 
+
+# 2. Add this block to satisfy line 40 of deployment.yaml
+resources:
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
