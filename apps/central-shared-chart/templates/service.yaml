@@ -7,11 +7,11 @@ metadata:
   labels:
     app: {{ .Values.global.appName }}
 spec:
-  type: ClusterIP
+  # This pattern forces Helm to check both flat and nested definitions cleanly
+  type: {{ .Values.serviceType | default .Values.service.type | default "ClusterIP" }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+    - port: {{ .Values.service.port | default 80 }}
+      targetPort: 8080
       protocol: TCP
-      name: http
   selector:
-    app: {{ .Values.global.appName }}
+    app: {{ .Values.serviceName }}
