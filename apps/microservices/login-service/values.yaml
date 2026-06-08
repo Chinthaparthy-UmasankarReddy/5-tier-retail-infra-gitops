@@ -1,65 +1,24 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: login-service-headless
-  namespace: production
-  labels:
-    app: login-service-app
-spec:
-  clusterIP: None # Defines a headless service for DNS resolution of individual pods
-  ports:
-    - port: 8081
-      targetPort: 8080
-      name: http
-  selector:
-    app: login-service-app
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: login-service-app
-  namespace: production
-  labels:
-    infra.layer: backend
-spec:
-  serviceName: "login-service-headless"
-  replicas: 1 # Safe operational footprint to match single-mount EBS constraints
-  selector:
-    matchLabels:
-      app: login-service-app
-  template:
-    metadata:
-      labels:
-        app: login-service-app
-    spec:
-      containers:
-        - name: login-app
-          image: umasankar33/5-retail-app-login:latest
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
-              name: http
-          env:
-            - name: PORT
-              value: "8080"
-            - name: NODE_ENV
-              value: "production"
-          volumeMounts:
-            - name: login-activity-logs
-              mountPath: /app/logs # Session logs written down here inside the EBS volume
-          resources:
-            limits:
-              cpu: "300m"
-              memory: "256Mi"
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-  volumeClaimTemplates:
-    - metadata:
-        name: login-activity-logs
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "gp3" # Utilizes the high-throughput AWS EBS volume storage class
-        resources:
-          requests:
-            storage: 1Gi
+global:
+  appName: login-service-app
+
+# FIX: This block was missing, which triggered the Helm compilation error
+service:
+  type: ClusterIP
+  port: 8081
+  targetPort: 8080
+
+image:
+  repository: umasankar33/5-retail-app-login
+  tag: latest
+  pullPolicy: Always
+
+# If your central-shared-chart supports stateful/persistence variables, define them here:
+persistence:
+  enabled: true
+  storageClass: gp3
+  size: 1Gi
+  mountPath: /app/logs
+
+env:
+  PORT: "8080"
+  NODE_ENV: "production"
