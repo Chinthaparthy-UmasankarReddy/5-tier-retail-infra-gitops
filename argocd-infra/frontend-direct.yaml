@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: web-nginx
-          image: umasankar33/5-retail-app-frontend:latest
+          image: umasankar33/5-retail-app-frontend:2
           imagePullPolicy: Always
           ports:
             - containerPort: 80
