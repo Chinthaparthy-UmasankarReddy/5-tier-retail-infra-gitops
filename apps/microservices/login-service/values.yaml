@@ -1,20 +1,65 @@
-global:
-  appName: login-service
-
-replicaCount: 1
-
-image:
-  repository: umasankar33/5-retail-app-source-login-service
-  tag: latest
-
-service:
-  port: 8081
-
-env:
-  NODE_ENV: "production"
-  PORT: "8081"
-  DB_HOST: "prod-retail-db.ap-south-1.rds.amazonaws.com"
-
-resources:
-  limits: { cpu: "300m", memory: "256Mi" }
-  requests: { cpu: "100m", memory: "128Mi" }
+apiVersion: v1
+kind: Service
+metadata:
+  name: login-service-headless
+  namespace: production
+  labels:
+    app: login-service-app
+spec:
+  clusterIP: None # Defines a headless service for DNS resolution of individual pods
+  ports:
+    - port: 8081
+      targetPort: 8080
+      name: http
+  selector:
+    app: login-service-app
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: login-service-app
+  namespace: production
+  labels:
+    infra.layer: backend
+spec:
+  serviceName: "login-service-headless"
+  replicas: 1 # Safe operational footprint to match single-mount EBS constraints
+  selector:
+    matchLabels:
+      app: login-service-app
+  template:
+    metadata:
+      labels:
+        app: login-service-app
+    spec:
+      containers:
+        - name: login-app
+          image: umasankar33/5-retail-app-login:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: PORT
+              value: "8080"
+            - name: NODE_ENV
+              value: "production"
+          volumeMounts:
+            - name: login-activity-logs
+              mountPath: /app/logs # Session logs written down here inside the EBS volume
+          resources:
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+  volumeClaimTemplates:
+    - metadata:
+        name: login-activity-logs
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "gp3" # Utilizes the high-throughput AWS EBS volume storage class
+        resources:
+          requests:
+            storage: 1Gi
