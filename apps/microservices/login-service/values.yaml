@@ -1,18 +1,17 @@
 global:
   appName: login-service-app
 
-# FIX: This block was missing, which triggered the Helm compilation error
+# FIX: Ensured fields map correctly to the template interpreter
 service:
   type: ClusterIP
   port: 8081
-  targetPort: 8080
+  targetPort: 8080  # Ensure this matches the exact casing expected by your shared chart template
 
 image:
   repository: umasankar33/5-retail-app-source-login-service
   tag: latest
   pullPolicy: Always
 
-# If your central-shared-chart supports stateful/persistence variables, define them here:
 persistence:
   enabled: true
   storageClass: gp3
@@ -20,10 +19,9 @@ persistence:
   mountPath: /app/logs
 
 env:
-  PORT: "8080"
+  PORT: "8080"      # This explicitly binds the container inner system to 8080
   NODE_ENV: "production"
 
 resources:
   limits: { cpu: "500m", memory: "512Mi" }
   requests: { cpu: "250m", memory: "256Mi" }
-
