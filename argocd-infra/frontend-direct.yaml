@@ -34,6 +34,9 @@ kind: Service
 metadata:
   name: retail-ui-lb
   namespace: production
+  annotations:
+    # --- CRITICAL AWS PUBLIC ACCESS FIX ---
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
 spec:
   type: LoadBalancer
   ports:
