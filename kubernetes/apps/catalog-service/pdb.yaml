@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: catalog-service-pdb
+  namespace: retail-prod
+spec:
+  minAvailable: 1 # Guarantees at least one pod is always alive during cluster scaling
+  selector:
+    matchLabels:
+      app: catalog-service

@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: retail-devops-project
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io # Enforces safe deletion loops
+spec:
+  description: "Production Secure Sandbox Perimeter for the Retail Microservices Platform"
+  
+  # 1. REPOSITORY RBAC: Restrict this team strictly to your official GitHub organizational repositories
+  sourceRepos:
+    - 'https://github.com/Chinthaparthy-UmasankarReddy/5-retail-app-gitops.git'
+
+  # 2. DESTINATION RBAC: Enforce a strict network perimeter. Pods can ONLY deploy to retail-prod on EKS
+  destinations:
+    - namespace: retail-prod
+      server: 'https://kubernetes.default.svc' # Local EKS Worker Node Api Target
+
+  # 3. NAMESPACE RESOURCE RBAC: Whitelist exactly what components the devops engine is allowed to create
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace # Allows Wave -3 onboarding namespace initialization
+  
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*' # Allows all standard workload primitives (Deployments, Services, ConfigMaps, Secrets, Ingress)
+
+  # 4. ROLES & ROLEBINDINGS (ArgoCD Local RBAC): Defines scoped access permissions for team execution tokens
+  roles:
+    - name: retail-admin-operator
+      description: "Full read-write capabilities inside the retail ecosystem dashboards"
+      policies:
+        - p, proj:retail-devops-project:retail-admin-operator, applications, *, retail-prod/*, allow
+      groups:
+        - 'retail-devops-cluster-engineers' # Binds directly to your enterprise Identity Provider (IdP/OIDC) SSO group

@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: retail-platform-appset
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-retail-app-gitops.git'
+        revision: HEAD
+        directories:
+          - path: 'kubernetes/apps/*'
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      # FIX: Changed from 'default' to your locked-down production AppProject framework
+      project: retail-devops-project 
+      source:
+        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-retail-app-gitops.git'
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: retail-prod
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
