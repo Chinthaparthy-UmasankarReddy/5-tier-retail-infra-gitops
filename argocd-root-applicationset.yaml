@@ -6,8 +6,8 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-retail-app-gitops.git'
-        revision: HEAD
+        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
+        revision: main
         directories:
           - path: 'kubernetes/apps/*'
   template:
@@ -17,8 +17,8 @@ spec:
       # FIX: Changed from 'default' to your locked-down production AppProject framework
       project: retail-devops-project 
       source:
-        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-retail-app-gitops.git'
-        targetRevision: HEAD
+        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
+        targetRevision: main
         path: '{{path}}'
       destination:
         server: 'https://kubernetes.default.svc'

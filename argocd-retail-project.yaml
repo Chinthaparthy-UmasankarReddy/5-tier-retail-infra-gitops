@@ -10,7 +10,7 @@ spec:
   
   # 1. REPOSITORY RBAC: Restrict this team strictly to your official GitHub organizational repositories
   sourceRepos:
-    - 'https://github.com/Chinthaparthy-UmasankarReddy/5-retail-app-gitops.git'
+    - 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
 
   # 2. DESTINATION RBAC: Enforce a strict network perimeter. Pods can ONLY deploy to retail-prod on EKS
   destinations:
