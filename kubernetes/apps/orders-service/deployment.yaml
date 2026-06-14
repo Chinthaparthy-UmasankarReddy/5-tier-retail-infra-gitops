@@ -39,7 +39,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: retail-secure-vault
-              key: DB_PASSWORD
+              key: password
         resources:
           requests:
             cpu: "400m"
