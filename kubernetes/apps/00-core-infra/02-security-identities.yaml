@@ -5,8 +5,18 @@ metadata:
   namespace: retail-prod
   annotations:
     argocd.argoproj.io/sync-wave: "-3"
-    # Floci maps mock state to dummy accounts effortlessly
     eks.amazonaws.com/role-arn: arn:aws:iam::000000000000:role/EKS-Retail-Application-Execution-Role
+---
+# ADD THIS DEFINITION BELOW:
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: external-secrets-sa
+  namespace: retail-prod
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3"
+    # Floci maps mock state to dummy accounts effortlessly
+    eks.amazonaws.com/role-arn: arn:aws:iam::000000000000:role/EKS-External-Secrets-Execution-Role
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -36,6 +46,9 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: retail-app-sa
+  namespace: retail-prod
+- kind: ServiceAccount # Added to give this SA the same reading capabilities if needed
+  name: external-secrets-sa
   namespace: retail-prod
 roleRef:
   kind: Role
