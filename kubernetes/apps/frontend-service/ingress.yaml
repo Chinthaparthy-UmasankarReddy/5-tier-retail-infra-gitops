@@ -5,12 +5,12 @@ metadata:
   namespace: retail-prod
   annotations:
     argocd.argoproj.io/sync-wave: "3"
-    # Swapped AWS ALB checks for native standard ingress pathing
 spec:
   ingressClassName: traefik # Points directly to k3s default ingress handler
   rules:
   - http:
       paths:
+      # 1. KEEP THIS: Routes the web portal UI assets
       - path: /
         pathType: Prefix
         backend:
@@ -18,3 +18,11 @@ spec:
             name: frontend-service
             port:
               number: 80
+      # 2. ADD THIS: Routes the backend transaction calls to the Go binary
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: catalog-service
+            port:
+              number: 8082
