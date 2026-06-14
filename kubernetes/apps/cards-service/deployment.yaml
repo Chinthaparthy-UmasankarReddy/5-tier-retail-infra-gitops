@@ -60,7 +60,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: retail-secure-vault
-              key: CARDS_SECRET_KEY
+              key: aes_gcm_key # Aligned to the direct extracted payload key
 ---
 apiVersion: v1
 kind: Service

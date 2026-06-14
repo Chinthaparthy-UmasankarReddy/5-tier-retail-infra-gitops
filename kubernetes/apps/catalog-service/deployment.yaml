@@ -78,7 +78,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: retail-secure-vault
-              key: DB_PASSWORD
+              key: password
 ---
 apiVersion: v1
 kind: Service

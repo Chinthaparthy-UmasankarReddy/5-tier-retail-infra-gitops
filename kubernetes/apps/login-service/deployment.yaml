@@ -28,7 +28,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: retail-secure-vault
-              key: JWT_SECRET
+              key: jwt_signing_key
         resources:
           requests:
             cpu: "100m"

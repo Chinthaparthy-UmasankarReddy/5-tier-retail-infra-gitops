@@ -49,11 +49,11 @@ spec:
             configMapKeyRef:
               name: retail-shared-config
               key: DB_NAME
-        - name: POSTGRES_PASSWORD
+        - name: POSTGRES_PASSWORD  # The environment variable the container reads stays the same
           valueFrom:
             secretKeyRef:
               name: retail-secure-vault
-              key: DB_PASSWORD
+              key: password        # UPDATED: Matches the extracted key name
         resources:
           requests:
             cpu: "250m"
