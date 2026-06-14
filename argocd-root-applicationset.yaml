@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: retail-platform-appset
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
+        revision: floci # UPDATED: Targets your dedicated local testing branch
+        directories:
+          - path: 'kubernetes/apps/*'
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      project: default 
+      source:
+        repoURL: 'https://github.com/Chinthaparthy-UmasankarReddy/5-tier-retail-infra-gitops.git'
+        targetRevision: floci # UPDATED: Targets your dedicated local testing branch
+        path: '{{path}}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: retail-prod
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+          # CRITICAL: Bypasses the 262KB metadata annotation limits for CRDs automatically
+          - ServerSideApply=true

@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-prod-pvc
+  namespace: retail-prod
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path # Forces local k3s path binding
+  resources:
+    requests:
+      storage: 2Gi # Lowered from 10Gi to save host machine overhead
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: retail-db
+  namespace: retail-prod
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  serviceName: retail-db-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: retail-db
+  template:
+    metadata:
+      labels:
+        app: retail-db
+    spec:
+      serviceAccountName: retail-app-sa
+      containers:
+      - name: postgres
+        image: postgres:16-alpine
+        ports:
+        - containerPort: 5432
+          name: dbport
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: retail-shared-config
+              key: DB_USER
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: retail-shared-config
+              key: DB_NAME
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: retail-secure-vault
+              key: DB_PASSWORD
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+        volumeMounts:
+        - name: db-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: postgres-prod-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: retail-db-service
+  namespace: retail-prod
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: retail-db
+  type: ClusterIP
