@@ -23,7 +23,7 @@ spec:
       serviceAccountName: retail-app-sa
       containers:
       - name: cards-engine
-        image: umasankar33/retail-app-source-cards-test:2
+        image: umasankar33/retail-app-source-cards-test:1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8083
