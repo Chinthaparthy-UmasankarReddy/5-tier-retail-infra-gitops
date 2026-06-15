@@ -23,7 +23,7 @@ spec:
       serviceAccountName: retail-app-sa
       containers:
       - name: catalog-engine
-        image: umasankar33/retail-app-source-catalog-test:1
+        image: umasankar33/catalog-service:v1.0.1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8082
