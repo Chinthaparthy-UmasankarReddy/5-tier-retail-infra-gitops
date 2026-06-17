@@ -20,6 +20,10 @@ spec:
         image: umasankar33/5-retail-app-frontend:v21
         ports:
         - containerPort: 80
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
         resources:
           requests:
             cpu: "100m"
@@ -27,6 +31,10 @@ spec:
           limits:
             cpu: "200m"
             memory: "256Mi"
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: frontend-nginx-config
 ---
 apiVersion: v1
 kind: Service
