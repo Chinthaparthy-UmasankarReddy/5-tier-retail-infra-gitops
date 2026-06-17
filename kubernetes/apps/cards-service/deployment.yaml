@@ -56,6 +56,8 @@ spec:
           value: "8083"
         - name: LOG_LEVEL
           value: "info"
+        - name: HOST
+          value: "0.0.0.0"
         - name: CARDS_SECRET_KEY
           valueFrom:
             secretKeyRef:
