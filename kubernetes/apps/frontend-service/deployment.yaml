@@ -34,10 +34,12 @@ metadata:
   name: frontend-service
   namespace: retail-prod
 spec:
+  type: NodePort # FIX: Change from ClusterIP to NodePort
   ports:
   - port: 80
     targetPort: 80
-    protocol: TCP
+    #protocol: TCP
+    nodePort: 30080 # Optional: Hardcode a specific port between 30000-32767 if desired
   selector:
     app: frontend-service
-  type: ClusterIP # Traefik abstracts this directly to the cluster domain
+  #type: ClusterIP # Traefik abstracts this directly to the cluster domain
