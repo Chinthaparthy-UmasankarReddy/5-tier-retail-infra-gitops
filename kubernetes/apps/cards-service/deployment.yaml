@@ -39,22 +39,22 @@ spec:
           limits:
             cpu: "400m"
             memory: "512Mi"
-        # --- FIX: Changed from httpGet to exec to bypass the localhost interface binding restriction ---
+        # --- FIX: Uses native node engine to probe localhost, bypassing missing curl ---
         readinessProbe:
           exec:
             command:
-            - sh
-            - -c
-            - curl -sSf http://127.0.0.1:8083/healthz
+            - node
+            - -e
+            - "const req = require('http').get('http://127.0.0.1:8083/healthz', (res) => { if (res.statusCode === 200) process.exit(0); else process.exit(1); }); req.on('error', () => process.exit(1));"
           initialDelaySeconds: 15
           periodSeconds: 10
           timeoutSeconds: 5
         livenessProbe:
           exec:
             command:
-            - sh
-            - -c
-            - curl -sSf http://127.0.0.1:8083/healthz
+            - node
+            - -e
+            - "const req = require('http').get('http://127.0.0.1:8083/healthz', (res) => { if (res.statusCode === 200) process.exit(0); else process.exit(1); }); req.on('error', () => process.exit(1));"
           initialDelaySeconds: 20
           periodSeconds: 20
           timeoutSeconds: 5
